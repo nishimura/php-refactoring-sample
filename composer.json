@@ -4,5 +4,8 @@
         "files": [
             "src/functions.php"
         ]
+    },
+    "require": {
+        "nikic/fast-route": "^1.3"
     }
 }
