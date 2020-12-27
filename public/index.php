@@ -3,148 +3,17 @@
 ini_set('display_errors', true);
 error_reporting(-1);
 
-/** @param ?string $a */
-function h($a):string
-{
-    return htmlspecialchars($a, ENT_QUOTES, 'UTF-8');
-}
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-/** @param string */
-function br($a): string
-{
-    return nl2br(h($a));
-}
-
-/** @param string|array<mixed,mixed>|null $a */
-function maybe_string(&$a):?string
-{
-    if ($a === null)
-        return null;
-    $s = filter_var($a);
-    if ($s === false || $s === '')
-        return null;
-    return $s;
-}
-
-/** @param string|array<mixed,mixed>|null $a */
-function maybe_int(&$a): ?int
-{
-    if ($a === null)
-        return null;
-
-    $i = filter_var($a, FILTER_VALIDATE_INT);
-    if ($i === false)
-        return null;
-
-    return (int)$i;
-}
-
-function getPdo(): PDO
-{
-    $data = dirname(__DIR__) . '/data/db.sqlite';
-    $pdo = new PDO("sqlite:$data");
-
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-
-    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    return $pdo;
-}
-
-$article = (object)[
-    'article_id' => null,
-    'title' => null,
-    'body' => null,
-    'created_at' => null,
-    'updated_at' => null,
-    'tags' => null,
-];
-
-$pdo = getPdo();
-$message = null;
-if (($title = maybe_string($_POST['title'])) &&
-    ($body = maybe_string($_POST['body']))){
-
-    if ($articleId = maybe_int($_POST['article_id'])){
-        $sql = 'update article set title = ?, body = ?, updated_at = current_timestamp where article_id = ?';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$title, $body, $articleId]);
-
-        $pdo->exec(sprintf('delete from tag where article_id = %d', $articleId));
-
-        $message = '更新しました。';
-
-    }else{
-        $sql = 'insert into article(title, body) values(?,?)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$title, $body]);
-        $articleId = $pdo->lastInsertId();
-
-        $message = '登録しました。';
-    }
-
-    $tags = explode(' ', $_POST['tags'] ?? []);
-    if ($tags){
-        $tagSql = 'insert into tag values(?, ?)';
-        $stmt = $pdo->prepare($tagSql);
-        foreach ($tags as $tag){
-            $stmt->execute([$articleId, $tag]);
-        }
-    }
-
-}
-
-if ($id = maybe_int($_POST['delete_id'])){
-    $pdo->exec(sprintf('delete from tag where article_id = %d', $id));
-    $pdo->exec(sprintf('delete from article where article_id = %d', $id));
-    $message = '削除しました。';
-}
-
-if ($id = maybe_int($_GET['id'])){
-    $sql = "
-select article.*, group_concat(tag, ' ') as tags
-from article
-left outer join tag using(article_id)
-where article_id = ?
-    ";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$id]);
-    $rows = $stmt->fetchAll();
-
-    if ($rows){
-        $article = $rows[0];
-    }
-}
-
-$tagWhere = '';
-$params = [];
-if ($search = maybe_string($_GET['tag'])){
-    $tagWhere = '
-where exists (
-  select 1
-  from tag
-  where article_id = article.article_id
-    and tag = ?
-)';
-    $params = [$search];
-}
-$stmt = $pdo->prepare(sprintf("
-select article.*, tags
-from article
-left outer join (
-  select article_id, group_concat(tag, ' ') as tags
-  from tag
-  group by article_id
-) tag using(article_id)
-%s
-order by created_at desc
-    ", $tagWhere));
-$stmt->execute($params);
-$rows = $stmt->fetchAll();
+$ret = Bbs\AppMain::run();
+$message = $ret['message'];
+$article = $ret['article'];
+$rows = $ret['rows'];
 
 ?>
 <!DOCTYPE html>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0" >
 <title>メモ帳</title>
 <style type="text/css">
 * { vertical-align: middle; }
