@@ -6,7 +6,7 @@ use FastRoute;
 
 class AppMain
 {
-    public static function run()
+    public static function run(): void
     {
         $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
             $r->get('/[{id:\d+}]', [Page\MemoPage::class, 'index']);

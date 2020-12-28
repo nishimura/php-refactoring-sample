@@ -3,10 +3,12 @@
 /** @param ?string $a */
 function h($a):string
 {
+    if ($a === null)
+        return '';
     return htmlspecialchars($a, ENT_QUOTES, 'UTF-8');
 }
 
-/** @param string */
+/** @param string $a */
 function br($a): string
 {
     return nl2br(h($a));
@@ -46,4 +48,12 @@ function getPdo(): PDO
 
     $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     return $pdo;
+}
+
+function strtotimeex(string $s): int
+{
+    $ret = strtotime($s);
+    if ($ret === false)
+        $ret = time();
+    return $ret;
 }

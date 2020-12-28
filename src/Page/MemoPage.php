@@ -4,11 +4,13 @@ namespace Bbs\Page;
 
 use PDO;
 use Bbs\Response\FoundResponse;
+use Bbs\Response\Response;
 use Bbs\Session\Session;
 
 class MemoPage
 {
-    public static function index($query)
+    /** @param array<string,mixed> $query */
+    public static function index($query): Response
     {
         $pdo = getPdo();
         $tagWhere = '';
@@ -34,26 +36,22 @@ left outer join (
 %s
 order by created_at desc
     ", $tagWhere));
+        $stmt->setFetchMode(PDO::FETCH_CLASS, ArticleDto::class, []);
         $stmt->execute($params);
 
-        return new MemoHtml([
-            'rows' => $stmt->fetchAll(),
-            'message' => Session::pop('message'),
-            'article' => self::getArticle($query),
-        ]);
+        $articles = $stmt->fetchAll() ?: [];
+        return new MemoHtml(new MemoDto(
+            $articles
+            , Session::pop('message')
+            , self::getArticle($query)
+        ));
     }
 
-    private static function getArticle($query)
+    /** @param array<string,mixed> $query */
+    private static function getArticle($query): FormArticleDto
     {
         $id = maybe_int($query['id']);
-        $article = (object)[
-            'article_id' => null,
-            'title' => null,
-            'body' => null,
-            'created_at' => null,
-            'updated_at' => null,
-            'tags' => null,
-        ];
+        $article = new FormArticleDto();
         if ($id === null)
             return $article;
 
@@ -65,6 +63,7 @@ left outer join tag using(article_id)
 where article_id = ?
     ";
         $stmt = $pdo->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, FormArticleDto::class, []);
         $stmt->execute([$id]);
         $rows = $stmt->fetchAll();
 
@@ -74,9 +73,10 @@ where article_id = ?
         return $article;
     }
 
-    private static function updateTags(PDO $pdo, int $id)
+    private static function updateTags(PDO $pdo, int $id): void
     {
-        $tags = explode(' ', $_POST['tags'] ?? []);
+        $tags = maybe_string($_POST['tags']);
+        $tags = $tags ? explode(' ', $tags) : [];
         if ($tags){
             $tagSql = 'insert into tag values(?, ?)';
             $stmt = $pdo->prepare($tagSql);
@@ -86,7 +86,7 @@ where article_id = ?
         }
     }
 
-    public static function create()
+    public static function create(): Response
     {
         $message = null;
 
@@ -102,12 +102,13 @@ where article_id = ?
         $stmt->execute([$title, $body]);
         $articleId = $pdo->lastInsertId();
 
-        self::updateTags($pdo, $articleId);
+        self::updateTags($pdo, (int)$articleId);
 
         return new FoundResponse('/', '登録しました。');
     }
 
-    public static function update($query)
+    /** @param array<string,mixed> $query */
+    public static function update($query): Response
     {
         $title = maybe_string($_POST['title']);
         $body = maybe_string($_POST['body']);
@@ -129,7 +130,8 @@ where article_id = ?
         return new FoundResponse('/', '更新しました。');
     }
 
-    public static function delete($query)
+    /** @param array<string,mixed> $query */
+    public static function delete($query): Response
     {
         $id = maybe_int($query['id']);
         if ($id === null)

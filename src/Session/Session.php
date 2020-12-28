@@ -4,20 +4,20 @@ namespace Bbs\Session;
 
 class Session
 {
-    public static function start()
+    public static function start(): void
     {
         if (session_status() === PHP_SESSION_NONE)
             session_start();
     }
 
-    public static function get($key)
+    public static function get(string $key): ?string
     {
         self::start();
 
         return $_SESSION[$key] ?? null;
     }
 
-    public static function pop($key)
+    public static function pop(string $key): ?string
     {
         self::start();
         $ret = self::get($key);
@@ -26,13 +26,13 @@ class Session
         return $ret;
     }
 
-    public static function add($key, $value)
+    public static function add(string $key, string $value): void
     {
         self::start();
         $_SESSION[$key] = $value;
     }
 
-    public static function remove($key)
+    public static function remove(string $key): void
     {
         self::start();
         unset($_SESSION[$key]);

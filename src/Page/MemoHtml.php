@@ -6,18 +6,18 @@ use Bbs\Response\HtmlResponse;
 
 class MemoHtml extends HtmlResponse
 {
+    /** @var MemoDto */
     private $vars;
-    public function __construct($vars)
+    public function __construct(MemoDto $vars)
     {
         $this->vars = $vars;
     }
 
     public function showHtml(): void
     {
-
-$message = $this->vars['message'];
-$article = $this->vars['article'];
-$rows = $this->vars['rows'];
+$message = $this->vars->message;
+$form = $this->vars->form;
+$rows = $this->vars->articles;
 
 ?>
 
@@ -44,15 +44,15 @@ form { display: inline-block; }
 <section>
   <h2>新規投稿</h2>
   <form action="" method="POST">
-    <input type="hidden" name="article_id" value="<?= $article->article_id ?>">
-    タイトル: <input type="text" name="title" value="<?= h($article->title) ?>"><br>
-    本　　文: <textarea name="body" value=""><?= h($article->body) ?></textarea><br>
-    タ　　グ: <input type="text" name="tags" value="<?= h($article->tags) ?>"><br>
+    <input type="hidden" name="article_id" value="<?= $form->article_id ?>">
+    タイトル: <input type="text" name="title" value="<?= h($form->title) ?>"><br>
+    本　　文: <textarea name="body" value=""><?= h($form->body) ?></textarea><br>
+    タ　　グ: <input type="text" name="tags" value="<?= h($form->tags) ?>"><br>
     <button type="submit">投稿</button>
 
   </form>
 
-  <?php if ($article->article_id): ?>
+  <?php if ($form->article_id): ?>
   <div>
     <br>
     <a href="/">キャンセル</a>
@@ -72,14 +72,14 @@ form { display: inline-block; }
         <?= br($row->body) ?>
       </div>
       <div>
-        <time>created: <?= date('Y-m-d H:i:s', strtotime($row->created_at)) ?></time>
+        <time>created: <?= date('Y-m-d H:i:s', strtotimeex($row->created_at)) ?></time>
         <?php if ($row->updated_at): ?>
           <br>
-          <time>updated: <?= date('Y-m-d H:i:s', strtotime($row->updated_at)) ?></time>
+          <time>updated: <?= date('Y-m-d H:i:s', strtotimeex($row->updated_at)) ?></time>
         <?php endif; ?>
       </div>
       <div>
-        <?php foreach (explode(' ', $row->tags) as $tag): ?>
+        <?php foreach (explode(' ', $row->tags ?: '') as $tag): ?>
           <a href="?tag=<?= rawurlencode($tag) ?>"><?= h($tag) ?></a>
         <?php endforeach ?>
       </div>
