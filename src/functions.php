@@ -38,16 +38,11 @@ function maybe_int(&$a): ?int
     return (int)$i;
 }
 
-function getPdo(): PDO
+function getDb(): Bbs\Db\Db
 {
     $data = dirname(__DIR__) . '/data/db.sqlite';
-    $pdo = new PDO("sqlite:$data");
-
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-
-    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    return $pdo;
+    $db = new Bbs\Db\Db("sqlite:$data");
+    return $db;
 }
 
 function strtotimeex(string $s): int

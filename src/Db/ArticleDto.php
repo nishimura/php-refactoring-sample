@@ -1,6 +1,6 @@
 <?php
 
-namespace Bbs\Page;
+namespace Bbs\Db;
 
 class ArticleDto
 {

@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * @template TValue
+ * @implements Traversable<TValue>
+ * @link https://php.net/manual/en/class.pdostatement.php
+ */
+class PDOStatement implements Traversable
+{
+
+}

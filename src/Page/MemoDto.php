@@ -2,6 +2,8 @@
 
 namespace Bbs\Page;
 
+use Bbs\Db\ArticleDto;
+
 class MemoDto
 {
     /** @var array<int,ArticleDto> */
