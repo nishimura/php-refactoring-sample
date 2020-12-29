@@ -18,7 +18,7 @@ class ArticleModel
                 $form->article_id = $article->article_id;
                 $form->title = $article->title;
                 $form->body = $article->body;
-                $form->tags = $article->tags;
+                $form->tags = TagModel::toString($article->tags);
             }
         }
 
@@ -45,7 +45,8 @@ class ArticleModel
             throw new ValidateException('未入力項目があります。');
 
         $articleDao = new ArticleDao(getDb());
-        $articleDao->create($form->title, $form->body, $form->tags);
+        $article = $articleDao->create($form->title, $form->body);
+        TagModel::update($article->article_id, $form->tags);
     }
 
     public static function update(int $id, FormArticleDto $form): void
@@ -61,8 +62,8 @@ class ArticleModel
 
         $article->title = $form->title;
         $article->body = $form->body;
-        $article->tags = $form->tags;
         $articleDao->update($article);
+        TagModel::update($article->article_id, $form->tags);
     }
 
     public static function delete(int $id): void
@@ -72,5 +73,6 @@ class ArticleModel
         if (!$article)
             throw new ValidateException('データがありません。');
         $articleDao->delete($article);
+        TagModel::delete($article->article_id);
     }
 }

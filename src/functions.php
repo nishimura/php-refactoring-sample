@@ -66,8 +66,12 @@ function cast($fromObj, $to)
     $obj = $ref->newInstanceWithoutConstructor();
 
     foreach (get_object_vars($fromObj) as $k => $v){
-        if (property_exists($obj, $k))
-            $obj->$k = $v;
+        if (property_exists($obj, $k)){
+            if ($obj instanceof Bbs\Type\CastProperty)
+                $obj->castAssign($k, $v);
+            else
+                $obj->$k = $v;
+        }
     }
 
     $constructor = $ref->getConstructor();

@@ -19,4 +19,5 @@ services:
       'Bbs\Session': ['Bbs\Response', 'Bbs\Page'],
     ], [
       'Bbs\Db': ['Exception'],
+      'Bbs\Model': ['Exception', 'Bbs\Type'],
     ])

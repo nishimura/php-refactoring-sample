@@ -7,11 +7,9 @@ use Bbs\Form\FormArticleDto;
 class MemoDto
 {
     /** @var array<int,ArticleDto> */
-    public $articles;
-    /** @var ?string */
-    public $message;
-    /** @var FormArticleDto */
-    public $form;
+    public array $articles;
+    public ?string $message;
+    public FormArticleDto $form;
 
     /**
      * @param array<int,ArticleDto> $articles

@@ -79,8 +79,8 @@ form { display: inline-block; }
         <?php endif; ?>
       </div>
       <div>
-        <?php foreach (explode(' ', $row->tags ?: '') as $tag): ?>
-          <a href="?tag=<?= rawurlencode($tag) ?>"><?= h($tag) ?></a>
+        <?php foreach ($row->tags as $tag): ?>
+          <a href="?tag=<?= rawurlencode($tag->tag) ?>"><?= h($tag->tag) ?></a>
         <?php endforeach ?>
       </div>
 

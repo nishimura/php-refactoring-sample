@@ -16,7 +16,9 @@ class ArticleDao
     public function get(int $id): ?Article
     {
         $sql = "
-select article.*, group_concat(tag, ' ') as tags
+select article.*
+  , json_group_array(
+    json_object('article_id', tag.article_id, 'tag', tag)) as tags_json
 from article
 left outer join tag using(article_id)
 where article_id = ?
@@ -42,10 +44,12 @@ where exists (
         }
 
         $sql = sprintf("
-select article.*, tags
+select article.*, tags_json
 from article
 left outer join (
-  select article_id, group_concat(tag, ' ') as tags
+  select article_id
+  , json_group_array(
+    json_object('article_id', article_id, 'tag', tag)) as tags_json
   from tag
   group by article_id
 ) tag using(article_id)
@@ -53,17 +57,6 @@ left outer join (
 order by created_at desc
     ", $tagWhere);
         return $this->db->getAll($sql, $params, Article::class);
-    }
-
-    private function updateTags(Article $article): void
-    {
-        $tags = $article->tags ? explode(' ', $article->tags) : [];
-        if ($tags){
-            $tagSql = 'insert into tag values(?, ?)';
-            foreach ($tags as $tag){
-                $this->db->execOne($tagSql, [$article->article_id, $tag]);
-            }
-        }
     }
 
     public function update(Article $article): void
@@ -76,13 +69,9 @@ order by created_at desc
             $article->article_id,
         ];
         $this->db->execOne($sql, $params);
-
-        $this->db->unsafeQuery('delete from tag where article_id = ?',
-                               [$article->article_id]);
-        $this->updateTags($article);
     }
 
-    public function create(string $title, string $body, ?string $tags): void
+    public function create(string $title, string $body): Article
     {
         $sql = 'insert into article(title, body) values(?,?)';
         $this->db->execOne($sql, [$title, $body]);
@@ -94,8 +83,7 @@ order by created_at desc
         if (!$article)
             throw new \Exception('insert failed');
 
-        $article->tags = $tags;
-        $this->updateTags($article);
+        return $article;
     }
 
     public function delete(Article $article): void
