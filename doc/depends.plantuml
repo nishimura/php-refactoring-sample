@@ -1,0 +1,51 @@
+@startuml
+
+skinparam packageStyle rectangle
+hide circle
+scale 1.2
+
+title 掲示板型メモ帳 依存関係
+
+package DB {
+  object PDO {
+  }
+  object Db {
+  }
+  object Dao {
+  }
+}
+package モデル {
+  object Model {
+  }
+}
+package プレゼンテーション/IO {
+  object Page {
+  }
+  object Html {
+  }
+  object Form {
+  }
+}
+
+object AppMain {
+}
+object Response {
+}
+object Session {
+}
+
+AppMain -d-> Page
+Page --> Html
+Page --> Form
+Page --> Model
+Page -u-> Session
+Page -l-> Response
+
+Db -r-> PDO
+Dao -r-> Db
+Model --> Dao
+Model --> Form
+Html --> Form
+Html -u-|> Response
+
+@enduml

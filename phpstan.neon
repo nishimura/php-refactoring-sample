@@ -17,6 +17,7 @@ services:
       'Bbs\Html': ['Bbs\Page'],
       'Bbs\Page': ['Bbs\AppMain'],
       'Bbs\Session': ['Bbs\Response', 'Bbs\Page'],
+      'Bbs\Response': ['Bbs\Page', 'Bbs\Html'],
     ], [
       'Bbs\Db': ['Exception'],
       'Bbs\Model': ['Exception', 'Bbs\Type'],
