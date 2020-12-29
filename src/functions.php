@@ -52,3 +52,40 @@ function strtotimeex(string $s): int
         $ret = time();
     return $ret;
 }
+
+/**
+ * @template T
+ * @param mixed $fromObj
+ * @param class-string<T> $to
+ * @return T
+ */
+function cast($fromObj, $to)
+{
+    $ref = new \ReflectionClass($to);
+    /** @var T $obj */
+    $obj = $ref->newInstanceWithoutConstructor();
+
+    foreach (get_object_vars($fromObj) as $k => $v){
+        if (property_exists($obj, $k))
+            $obj->$k = $v;
+    }
+
+    $constructor = $ref->getConstructor();
+    if ($constructor)
+        $constructor->invoke($obj);
+
+    return $obj;
+}
+
+/**
+ * @template T
+ * @param array<int,mixed> $fromObjs
+ * @param class-string<T> $to
+ * @return array<int,T>
+ */
+function castList($fromObjs, $to)
+{
+    return array_map(function($obj) use ($to) {
+        return cast($obj, $to);
+    }, $fromObjs);
+}

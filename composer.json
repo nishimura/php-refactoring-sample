@@ -8,5 +8,8 @@
     "require": {
         "nikic/fast-route": "^1.3",
         "phpstan/phpstan": "^0.12.64"
+    },
+    "require-dev": {
+        "nish/phpstan-namespace-dependency": "^0.1.0"
     }
 }

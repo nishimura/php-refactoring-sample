@@ -1,8 +1,8 @@
 <?php
 
-namespace Bbs\Page;
+namespace Bbs\Html;
 
-use Bbs\Db\ArticleDto;
+use Bbs\Form\FormArticleDto;
 
 class MemoDto
 {

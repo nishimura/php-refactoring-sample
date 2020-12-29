@@ -1,6 +1,8 @@
 <?php
 
-namespace Bbs\Db;
+namespace Bbs\Dao;
+
+use Bbs\Db\Db;
 
 class ArticleDao
 {
@@ -11,7 +13,7 @@ class ArticleDao
         $this->db = $db;
     }
 
-    public function get(int $id): ?ArticleDto
+    public function get(int $id): ?Article
     {
         $sql = "
 select article.*, group_concat(tag, ' ') as tags
@@ -19,10 +21,10 @@ from article
 left outer join tag using(article_id)
 where article_id = ?
     ";
-        return $this->db->selectOne($sql, [$id], ArticleDto::class);
+        return $this->db->selectOne($sql, [$id], Article::class);
     }
 
-    /** @return array<int,ArticleDto> */
+    /** @return array<int,Article> */
     public function getAll(?string $tag)
     {
         $params = [];
@@ -50,10 +52,10 @@ left outer join (
 %s
 order by created_at desc
     ", $tagWhere);
-        return $this->db->getAll($sql, $params, ArticleDto::class);
+        return $this->db->getAll($sql, $params, Article::class);
     }
 
-    private function updateTags(ArticleDto $article): void
+    private function updateTags(Article $article): void
     {
         $tags = $article->tags ? explode(' ', $article->tags) : [];
         if ($tags){
@@ -64,20 +66,20 @@ order by created_at desc
         }
     }
 
-    public function update(ArticleDto $articleDto): void
+    public function update(Article $article): void
     {
         $sql = 'update article set title = ?, body = ?, updated_at = current_timestamp '
              . ' where article_id = ?';
         $params = [
-            $articleDto->title,
-            $articleDto->body,
-            $articleDto->article_id,
+            $article->title,
+            $article->body,
+            $article->article_id,
         ];
         $this->db->execOne($sql, $params);
 
         $this->db->unsafeQuery('delete from tag where article_id = ?',
-                               [$articleDto->article_id]);
-        $this->updateTags($articleDto);
+                               [$article->article_id]);
+        $this->updateTags($article);
     }
 
     public function create(string $title, string $body, ?string $tags): void
@@ -96,7 +98,7 @@ order by created_at desc
         $this->updateTags($article);
     }
 
-    public function delete(ArticleDto $article): void
+    public function delete(Article $article): void
     {
         $this->db->unsafeQuery('delete from tag where article_id = ?',
                                [$article->article_id]);

@@ -2,3 +2,21 @@ parameters:
   level: max
   stubFiles:
     - stubs/PDOStatement.stub
+
+includes:
+  - vendor/nish/phpstan-namespace-dependency/rules.neon
+
+services:
+  -
+    factory: Nish\PHPStan\NsDepends\DependencyChecker([
+      'PDO': ['Bbs\Db'],
+      'Bbs\Db': ['Bbs\Dao'],
+      'Bbs\Dao': ['Bbs\Model'],
+      'Bbs\Form': ['Bbs\Model', 'Bbs\Html', 'Bbs\Page'],
+      'Bbs\Model': ['Bbs\Page'],
+      'Bbs\Html': ['Bbs\Page'],
+      'Bbs\Page': ['Bbs\AppMain'],
+      'Bbs\Session': ['Bbs\Response', 'Bbs\Page'],
+    ], [
+      'Bbs\Db': ['Exception'],
+    ])

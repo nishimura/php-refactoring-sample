@@ -1,8 +1,8 @@
 <?php
 
-namespace Bbs\Db;
+namespace Bbs\Dao;
 
-class ArticleDto
+class Article
 {
     /** @var int */
     public $article_id;
