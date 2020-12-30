@@ -2,7 +2,7 @@
 
 namespace Bbs\Application;
 
-use Bbs\Domain\UpdateTagsRequest;
+use Bbs\Domain\Tag\UpdateTagsRequest;
 
 class UpdateTagsRequestImpl implements UpdateTagsRequest
 {

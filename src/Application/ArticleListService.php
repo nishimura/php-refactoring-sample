@@ -3,14 +3,13 @@
 namespace Bbs\Application;
 
 use Bbs\Domain;
-use Bbs\Io\Infrastructure\Db;
 
 class ArticleListService
 {
-    /** @var Domain\ArticleRepository */
+    /** @var Domain\Article\ArticleRepository */
     private $repository;
 
-    public function __construct(Domain\ArticleRepository $repository)
+    public function __construct(Domain\Article\ArticleRepository $repository)
     {
         $this->repository = $repository;
     }
@@ -18,9 +17,9 @@ class ArticleListService
     /** @return array<int,ArticleDto> */
     public function getArticleList(?string $tag)
     {
-        $model = new Domain\ArticleModel($this->repository);
+        $model = new Domain\Article\ArticleModel($this->repository);
         $articles = $model->getArticleList(new GetArticleListRequestImpl($tag));
-        return array_map(function(Domain\ArticleDto $article): ArticleDto {
+        return array_map(function(Domain\Article\ArticleDto $article): ArticleDto {
             return ArticleDto::fromModel($article);
         }, $articles);
     }

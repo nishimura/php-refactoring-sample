@@ -6,13 +6,7 @@ scale 1.2
 
 title 掲示板型メモ帳 依存関係
 
-package DB共通処理 {
-  object PDO {
-  }
-  object Db {
-  }
-}
-package モデル {
+package ドメイン {
   object ArticleModel {
   }
   object TagModel {
@@ -22,45 +16,61 @@ package モデル {
   object TagRepository {
   }
 }
-package プレゼンテーション/IO {
-  object Page {
+package アプリケーションサービス {
+  object ArticleService {
   }
-  object Html {
-  }
-  object Form {
+}
+
+package IO {
+package インフラ {
+  object Db {
   }
   object ArticleDao {
   }
   object TagDao {
   }
+  object Session {
+  }
+  object Response {
+  }
 }
-
+package コントローラー {
+  object Page {
+  }
+}
+package プレゼンテーション {
+  object Html {
+  }
+  object Form {
+  }
+}
+}
 object AppMain {
 }
-object Response {
-}
-object Session {
-}
 
-AppMain -d-> Page
-Page --> Html
+AppMain --> Page
+Page -l-> Html
 Page --> Form
 Page --> ArticleDao
 Page --> TagDao
-Page -l-> ArticleModel
-Page -l-> TagModel
-Page -u-> Session
-Page -u-> Response
+ArticleService --> ArticleModel
+ArticleService --> TagModel
+Page --> ArticleService
+Page --> Session
+Page --> Response
+Page --> Db
 
-Db --> PDO
+ArticleService --> ArticleRepository
+ArticleService --> TagRepository
+
 ArticleDao --> Db
 TagDao --> Db
 ArticleRepository <|-- ArticleDao
 TagRepository <|-- TagDao
-Html -r-> Form
-Html -u-|> Response
+Html --> Form
+Html --|> Response
 ArticleModel --> ArticleRepository
 TagModel --> TagRepository
-AppMain -l-> Response
+AppMain --> Response
 
 @enduml

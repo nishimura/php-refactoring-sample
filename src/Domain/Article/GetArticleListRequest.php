@@ -1,6 +1,6 @@
 <?php
 
-namespace Bbs\Domain;
+namespace Bbs\Domain\Article;
 
 interface GetArticleListRequest
 {

@@ -2,7 +2,7 @@
 
 namespace Bbs\Application;
 
-use Bbs\Domain\GetArticleRequest;
+use Bbs\Domain\Article\GetArticleRequest;
 
 class GetArticleRequestImpl implements GetArticleRequest
 {

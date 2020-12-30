@@ -1,6 +1,8 @@
 <?php
 
-namespace Bbs\Domain;
+namespace Bbs\Domain\Article;
+
+use Bbs\Domain\ValidateException;
 
 class ArticleModel
 {

@@ -1,8 +1,9 @@
 <?php
 
-namespace Bbs\Domain;
+namespace Bbs\Domain\Article;
 
 use Bbs\Type\CastProperty;
+use Bbs\Domain\Tag\TagDto;
 
 class ArticleDto implements CastProperty
 {

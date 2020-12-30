@@ -11,7 +11,6 @@ services:
     factory: Nish\PHPStan\NsDepends\DependencyChecker([
       'PDO': ['Bbs\Io\Infrastructure\Db'],
       'Bbs\Domain': ['Bbs\DomainService', 'Bbs\Application', 'Bbs\Io\Infrastructure\Db'],
-      'Bbs\DomainService': ['Bbs\Application', 'Bbs\Io\Infrastructure\Db'],
       'Bbs\Application': ['Bbs\Io\Page'],
       'Bbs\Io\Infrastructure\Response': ['Bbs\Io\Presentation', 'Bbs\Io\Page'],
       'Bbs\Io\Infrastructure': ['Bbs\Io\Page'],
@@ -22,5 +21,7 @@ services:
       'Bbs\Io\Presentation': ['Bbs\Type'],
       'Bbs\Io\Infrastructure': [],
       'Bbs\Io\Page': [],
+      'Bbs\Application': [],
       'Bbs\Domain': ['Exception', 'Bbs\Type'],
+      'Bbs\Type': [],
     ])

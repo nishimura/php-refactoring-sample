@@ -3,8 +3,8 @@
 namespace Bbs\Io\Infrastructure\Db;
 
 use Bbs\Io\Infrastructure\Db\Db;
-use Bbs\Domain\ArticleRepository;
-use Bbs\Domain\ArticleDto;
+use Bbs\Domain\Article\ArticleRepository;
+use Bbs\Domain\Article\ArticleDto;
 
 class ArticleDao implements ArticleRepository
 {

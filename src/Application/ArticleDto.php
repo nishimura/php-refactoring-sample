@@ -16,7 +16,7 @@ class ArticleDto
 
     private function __construct(){}
 
-    public static function fromModel(Domain\ArticleDto $dto): self
+    public static function fromModel(Domain\Article\ArticleDto $dto): self
     {
         $obj = new self();
         $obj->article_id = $dto->article_id;

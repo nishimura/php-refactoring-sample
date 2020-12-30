@@ -3,7 +3,7 @@
 namespace Bbs\Io\Infrastructure\Db;
 
 use Bbs\Io\Infrastructure\Db\Db;
-use Bbs\Domain\TagRepository;
+use Bbs\Domain\Tag\TagRepository;
 
 class TagDao implements TagRepository
 {

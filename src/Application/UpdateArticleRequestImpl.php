@@ -2,7 +2,7 @@
 
 namespace Bbs\Application;
 
-use Bbs\Domain\UpdateArticleRequest;
+use Bbs\Domain\Article\UpdateArticleRequest;
 
 class UpdateArticleRequestImpl extends CreateArticleRequestImpl
     implements UpdateArticleRequest

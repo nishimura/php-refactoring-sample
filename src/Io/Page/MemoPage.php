@@ -2,15 +2,14 @@
 
 namespace Bbs\Io\Page;
 
-use PDO;
 use Bbs\Io\Infrastructure\Response\FoundResponse;
 use Bbs\Io\Infrastructure\Response\Response;
 use Bbs\Io\Infrastructure\Session\Session;
-use Bbs\Io\Presentation\Html;
 use Bbs\Io\Infrastructure\Db;
-use Bbs\Domain;
+use Bbs\Io\Presentation\Html;
 use Bbs\Io\Presentation\Form;
 use Bbs\Application;
+use Exception;
 
 class MemoPage
 {
@@ -64,7 +63,7 @@ class MemoPage
         try {
             $service->create($form->title, $form->body, $form->tags);
 
-        }catch (Domain\ValidateException $e){
+        }catch (Exception $e){
             return self::responseIndex($form, $e->getMessage());
         }
 
@@ -88,7 +87,7 @@ class MemoPage
         try {
             $service->update($id, $form->title, $form->body, $form->tags);
 
-        }catch (Domain\ValidateException $e){
+        }catch (Exception $e){
             return self::responseIndex($form, $e->getMessage());
         }
 
@@ -106,7 +105,7 @@ class MemoPage
         try {
             $service->delete($id);
 
-        }catch (Domain\ValidateException $e){
+        }catch (Exception $e){
             return new FoundResponse('/');
         }
 
