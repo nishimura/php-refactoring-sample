@@ -38,10 +38,10 @@ function maybe_int(&$a): ?int
     return (int)$i;
 }
 
-function getDb(): Bbs\Db\Db
+function getDb(): Bbs\Io\Infrastructure\Db\Db
 {
     $data = dirname(__DIR__) . '/data/db.sqlite';
-    $db = new Bbs\Db\Db("sqlite:$data");
+    $db = new Bbs\Io\Infrastructure\Db\Db("sqlite:$data");
     return $db;
 }
 
@@ -65,6 +65,8 @@ function cast($fromObj, $to)
     /** @var T $obj */
     $obj = $ref->newInstanceWithoutConstructor();
 
+    if (!is_object($fromObj))
+        throw new \LogicException($fromObj . ' is not object');
     foreach (get_object_vars($fromObj) as $k => $v){
         if (property_exists($obj, $k)){
             if ($obj instanceof Bbs\Type\CastProperty)

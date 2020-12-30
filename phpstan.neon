@@ -9,16 +9,18 @@ includes:
 services:
   -
     factory: Nish\PHPStan\NsDepends\DependencyChecker([
-      'PDO': ['Bbs\Db'],
-      'Bbs\Db': ['Bbs\Dao'],
-      'Bbs\Dao': ['Bbs\Model'],
-      'Bbs\Form': ['Bbs\Model', 'Bbs\Html', 'Bbs\Page'],
-      'Bbs\Model': ['Bbs\Page'],
-      'Bbs\Html': ['Bbs\Page'],
-      'Bbs\Page': ['Bbs\AppMain'],
-      'Bbs\Session': ['Bbs\Response', 'Bbs\Page'],
-      'Bbs\Response': ['Bbs\Page', 'Bbs\Html'],
+      'PDO': ['Bbs\Io\Infrastructure\Db'],
+      'Bbs\Domain': ['Bbs\DomainService', 'Bbs\Application', 'Bbs\Io\Infrastructure\Db'],
+      'Bbs\DomainService': ['Bbs\Application', 'Bbs\Io\Infrastructure\Db'],
+      'Bbs\Application': ['Bbs\Io\Page'],
+      'Bbs\Io\Infrastructure\Response': ['Bbs\Io\Presentation', 'Bbs\Io\Page'],
+      'Bbs\Io\Infrastructure': ['Bbs\Io\Page'],
+      'Bbs\Io\Presentation': ['Bbs\Io\Page'],
+      'Bbs\Io': ['Bbs\AppMain'],
     ], [
-      'Bbs\Db': ['Exception'],
-      'Bbs\Model': ['Exception', 'Bbs\Type'],
+      'Bbs\Io\Infrastructure\Db': ['Exception'],
+      'Bbs\Io\Presentation': ['Bbs\Type'],
+      'Bbs\Io\Infrastructure': [],
+      'Bbs\Io\Page': [],
+      'Bbs\Domain': ['Exception', 'Bbs\Type'],
     ])

@@ -9,10 +9,10 @@ class AppMain
     public static function run(): void
     {
         $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-            $r->get('/[{id:\d+}]', [Page\MemoPage::class, 'index']);
-            $r->post('/', [Page\MemoPage::class, 'create']);
-            $r->post('/{id:\d+}', [Page\MemoPage::class, 'update']);
-            $r->post('/{id:\d+}/delete', [Page\MemoPage::class, 'delete']);
+            $r->get('/[{id:\d+}]', [Io\Page\MemoPage::class, 'index']);
+            $r->post('/', [Io\Page\MemoPage::class, 'create']);
+            $r->post('/{id:\d+}', [Io\Page\MemoPage::class, 'update']);
+            $r->post('/{id:\d+}/delete', [Io\Page\MemoPage::class, 'delete']);
         });
 
         // Fetch method and URI from somewhere
@@ -46,7 +46,7 @@ class AppMain
             }
 
             $ret = $handler($vars);
-            if ($ret instanceof Response\Response){
+            if ($ret instanceof Io\Infrastructure\Response\Response){
                 $ret->respond();
             }
             break;
